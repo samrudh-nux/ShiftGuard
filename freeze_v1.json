@@ -1,0 +1,581 @@
+{
+  "version": "freeze_v1",
+  "date": "2026-11-14",
+  "amends": null,
+  "amend_reason": null,
+  "working_question": "Do onset-labelled detector evaluations agree with failure-relevant (point-of-no-return) evaluations, and how stable are detector conclusions across policies, fallback choice and held-out effective-dynamics classes? PROVISIONAL pending the literature recheck before the detector-protocol freeze.",
+  "theory": {
+    "axes": {
+      "omega": "sqrt(g/(l*k)), k = 4/3 - m_pole/M: growth rate of a pole-angle error with the cart unforced; sets how fast an error must be corrected",
+      "hold_deg": "degrees(F/(M*g)), small-angle approximation: pole lean that the maximum constant push can hold; this is control authority",
+      "authority_margin": "hold_deg / termination angle: below ~1 the controller cannot always catch a lean that ends the episode"
+    },
+    "mechanisms": {
+      "authority": "Failure under AUTH and COMPOUND shifts is governed by hold_deg, not by which parameter changed.",
+      "window": "A policy tuned to nominal omega tolerates only a band of omega; wide tolerance on both sides is rare.",
+      "margin": "Policies with larger nominal angle excursions have less spare authority, so fail first when authority is cut."
+    },
+    "note": "Mechanisms are hypotheses motivated by the design data (dev policies), not established facts."
+  },
+  "unit_of_analysis": "policy (training seed). Per-policy rate = failures/50 episodes; the 20 policies are weighted equally; episodes are never pooled across policies.",
+  "environment": {
+    "id": "CartPole-v1",
+    "theta_threshold_deg": 12.0,
+    "x_threshold": 2.4,
+    "max_steps": 500
+  },
+  "software": {
+    "python": "3.13.18",
+    "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+    "numpy": "2.4.6",
+    "pandas": "2.2.3",
+    "scipy": "1.16.3",
+    "gymnasium": "1.4.0",
+    "gym": "0.25.2",
+    "torch": "2.14.1+cpu",
+    "stable-baselines3": "2.9.2"
+  },
+  "design_data_sha256": {
+    "rf_v1_summary": "2eca06ad1c38f976",
+    "rf_v2_fine_summary": "0662338b65523a7b",
+    "rf_v1_provenance": "375a534f1d0fe099"
+  },
+  "env_seed_partitions": {
+    "design_burned": [
+      10000,
+      10119
+    ],
+    "calibration": [
+      20000,
+      20199
+    ],
+    "validation": [
+      30000,
+      30199
+    ],
+    "test": [
+      50000,
+      50199
+    ],
+    "nominal_margin_episodes": [
+      20000,
+      20099
+    ],
+    "episodes_per_policy_condition": {
+      "validation": 50,
+      "test": 50
+    },
+    "calibration_nominal_only": 200,
+    "rule": "test seeds touched only by the final pipeline; extra episodes come from the next block of the same partition and are logged"
+  },
+  "policies": {
+    "dev": {
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "checkpoint_sha256": {
+        "0": "d4e783f81d2a2f5f",
+        "1": "aaefd68c33811fb5",
+        "2": "16d9aa39dd250f10",
+        "3": "7cb3eecc8d08ca83",
+        "4": "5d21ae6911501c7d",
+        "5": "da29609844d5f302",
+        "6": "d7ab8eefaa67f0b2",
+        "7": "fceb65ef3232697a",
+        "8": "1e87d988bf851655",
+        "9": "c218ffea141e18c4"
+      }
+    },
+    "test": {
+      "seeds": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119
+      ],
+      "rule": "no shifted evaluation before the detector-protocol freeze is logged; no seed is ever dropped, replaced or retrained because of its results (an infrastructure crash may be rerun with the same seed and logged); nominal-failing policies are kept and reported separately"
+    }
+  },
+  "conditions": [
+    {
+      "cls": "NOMINAL",
+      "factors": {},
+      "id": "nominal",
+      "omega": 3.9718521820553145,
+      "hold_deg": 53.150073759816614,
+      "omega_ratio": 1.0,
+      "hold_ratio": 1.0,
+      "authority_margin": 4.4291728133180515,
+      "design_fail_mean": 0.0,
+      "design_source": "assumed_nominal",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "AUTH",
+      "factors": {
+        "force_mag": 0.25
+      },
+      "id": "force_magx0.25",
+      "omega": 3.9718521820553145,
+      "hold_deg": 13.287518439954153,
+      "omega_ratio": 1.0,
+      "hold_ratio": 0.25,
+      "authority_margin": 1.1072932033295129,
+      "design_fail_mean": 0.005,
+      "design_source": "rf_v2_fine",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "AUTH",
+      "factors": {
+        "force_mag": 0.15
+      },
+      "id": "force_magx0.15",
+      "omega": 3.9718521820553145,
+      "hold_deg": 7.972511063972493,
+      "omega_ratio": 1.0,
+      "hold_ratio": 0.15000000000000002,
+      "authority_margin": 0.6643759219977078,
+      "design_fail_mean": 0.155,
+      "design_source": "rf_v2_fine",
+      "design_regime": "partial"
+    },
+    {
+      "cls": "AUTH",
+      "factors": {
+        "force_mag": 0.1
+      },
+      "id": "force_magx0.1",
+      "omega": 3.9718521820553145,
+      "hold_deg": 5.315007375981662,
+      "omega_ratio": 1.0,
+      "hold_ratio": 0.10000000000000002,
+      "authority_margin": 0.4429172813318052,
+      "design_fail_mean": 0.39,
+      "design_source": "rf_v2_fine",
+      "design_regime": "partial"
+    },
+    {
+      "cls": "AUTH",
+      "factors": {
+        "masscart": 6
+      },
+      "id": "masscartx6",
+      "omega": 3.8578475283332834,
+      "hold_deg": 9.584439530458736,
+      "omega_ratio": 0.9712968538363286,
+      "hold_ratio": 0.18032786885245908,
+      "authority_margin": 0.7987032942048947,
+      "design_fail_mean": 0.08,
+      "design_source": "rf_v2_fine",
+      "design_regime": "partial"
+    },
+    {
+      "cls": "AUTH",
+      "factors": {
+        "masscart": 12
+      },
+      "id": "masscartx12",
+      "omega": 3.845995838750218,
+      "hold_deg": 4.831824887256057,
+      "omega_ratio": 0.9683129337305877,
+      "hold_ratio": 0.09090909090909094,
+      "authority_margin": 0.4026520739380048,
+      "design_fail_mean": 0.49,
+      "design_source": "rf_v2_fine",
+      "design_regime": "partial"
+    },
+    {
+      "cls": "AUTH",
+      "factors": {
+        "masscart": 16
+      },
+      "id": "masscartx16",
+      "omega": 3.843019483680779,
+      "hold_deg": 3.631371499117905,
+      "omega_ratio": 0.9675635717369853,
+      "hold_ratio": 0.06832298136645962,
+      "authority_margin": 0.3026142915931587,
+      "design_fail_mean": 0.6849999999999999,
+      "design_source": "rf_v2_fine",
+      "design_regime": "severe"
+    },
+    {
+      "cls": "AUTH",
+      "factors": {
+        "masscart": 24
+      },
+      "id": "masscartx24",
+      "omega": 3.84003772093856,
+      "hold_deg": 2.4259369765891403,
+      "omega_ratio": 0.9668128482443814,
+      "hold_ratio": 0.04564315352697096,
+      "authority_margin": 0.20216141471576168,
+      "design_fail_mean": 0.8400000000000001,
+      "design_source": "rf_v2_fine",
+      "design_regime": "severe"
+    },
+    {
+      "cls": "FAST",
+      "factors": {
+        "gravity": 3
+      },
+      "id": "gravityx3",
+      "omega": 6.879449779473115,
+      "hold_deg": 17.716691253272206,
+      "omega_ratio": 1.7320508075688772,
+      "hold_ratio": 0.33333333333333337,
+      "authority_margin": 1.4763909377726838,
+      "design_fail_mean": 0.03,
+      "design_source": "rf_v2_fine",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "FAST",
+      "factors": {
+        "gravity": 3.5
+      },
+      "id": "gravityx3.5",
+      "omega": 7.430655028080732,
+      "hold_deg": 15.185735359947603,
+      "omega_ratio": 1.8708286933869707,
+      "hold_ratio": 0.2857142857142857,
+      "authority_margin": 1.2654779466623003,
+      "design_fail_mean": 0.3299999999999999,
+      "design_source": "rf_v2_fine",
+      "design_regime": "partial"
+    },
+    {
+      "cls": "FAST",
+      "factors": {
+        "gravity": 4
+      },
+      "id": "gravityx4",
+      "omega": 7.943704364110629,
+      "hold_deg": 13.287518439954153,
+      "omega_ratio": 2.0,
+      "hold_ratio": 0.25,
+      "authority_margin": 1.1072932033295129,
+      "design_fail_mean": 0.6,
+      "design_source": "rf_v2_fine",
+      "design_regime": "severe"
+    },
+    {
+      "cls": "FAST",
+      "factors": {
+        "length": 0.25
+      },
+      "id": "lengthx0.25",
+      "omega": 7.943704364110629,
+      "hold_deg": 53.150073759816614,
+      "omega_ratio": 2.0,
+      "hold_ratio": 1.0,
+      "authority_margin": 4.4291728133180515,
+      "design_fail_mean": 0.085,
+      "design_source": "rf_v2_fine",
+      "design_regime": "partial"
+    },
+    {
+      "cls": "FAST",
+      "factors": {
+        "length": 0.2
+      },
+      "id": "lengthx0.2",
+      "omega": 8.881331475656554,
+      "hold_deg": 53.150073759816614,
+      "omega_ratio": 2.23606797749979,
+      "hold_ratio": 1.0,
+      "authority_margin": 4.4291728133180515,
+      "design_fail_mean": 0.49,
+      "design_source": "rf_v2_fine",
+      "design_regime": "partial"
+    },
+    {
+      "cls": "FAST",
+      "factors": {
+        "length": 0.15
+      },
+      "id": "lengthx0.15",
+      "omega": 10.255278236465214,
+      "hold_deg": 53.150073759816614,
+      "omega_ratio": 2.581988897471611,
+      "hold_ratio": 1.0,
+      "authority_margin": 4.4291728133180515,
+      "design_fail_mean": 0.955,
+      "design_source": "rf_v2_fine",
+      "design_regime": "severe"
+    },
+    {
+      "cls": "SLOW",
+      "factors": {
+        "length": 1.5
+      },
+      "id": "lengthx1.5",
+      "omega": 3.2430037265984923,
+      "hold_deg": 53.150073759816614,
+      "omega_ratio": 0.816496580927726,
+      "hold_ratio": 1.0,
+      "authority_margin": 4.4291728133180515,
+      "design_fail_mean": 0.045,
+      "design_source": "rf_v2_fine",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "SLOW",
+      "factors": {
+        "length": 1.75
+      },
+      "id": "lengthx1.75",
+      "omega": 3.0024380337221723,
+      "hold_deg": 53.150073759816614,
+      "omega_ratio": 0.7559289460184544,
+      "hold_ratio": 1.0,
+      "authority_margin": 4.4291728133180515,
+      "design_fail_mean": 0.585,
+      "design_source": "rf_v2_fine",
+      "design_regime": "severe"
+    },
+    {
+      "cls": "SLOW",
+      "factors": {
+        "length": 2
+      },
+      "id": "lengthx2",
+      "omega": 2.8085236118018986,
+      "hold_deg": 53.150073759816614,
+      "omega_ratio": 0.7071067811865475,
+      "hold_ratio": 1.0,
+      "authority_margin": 4.4291728133180515,
+      "design_fail_mean": 0.82,
+      "design_source": "rf_v2_fine",
+      "design_regime": "severe"
+    },
+    {
+      "cls": "HEAVYPOLE",
+      "factors": {
+        "masspole": 128
+      },
+      "id": "masspolex128",
+      "omega": 6.949820141557622,
+      "hold_deg": 4.236600082304223,
+      "omega_ratio": 1.7497680736852848,
+      "hold_ratio": 0.07971014492753624,
+      "authority_margin": 0.35305000685868526,
+      "design_fail_mean": 0.335,
+      "design_source": "rf_v2_fine",
+      "design_regime": "partial"
+    },
+    {
+      "cls": "CONTROL",
+      "factors": {
+        "gravity": 2.5
+      },
+      "id": "gravityx2.5",
+      "omega": 6.280049712402275,
+      "hold_deg": 21.26002950392665,
+      "omega_ratio": 1.5811388300841893,
+      "hold_ratio": 0.4000000000000001,
+      "authority_margin": 1.7716691253272208,
+      "design_fail_mean": 0.0,
+      "design_source": "rf_v2_fine",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "CONTROL",
+      "factors": {
+        "masspole": 32
+      },
+      "id": "masspolex32",
+      "omega": 5.856620185738529,
+      "hold_deg": 13.920257413285306,
+      "omega_ratio": 1.4745312557699224,
+      "hold_ratio": 0.261904761904762,
+      "authority_margin": 1.1600214511071087,
+      "design_fail_mean": 0.0,
+      "design_source": "rf_v2_fine",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "CONTROL",
+      "factors": {
+        "force_mag": 0.3
+      },
+      "id": "force_magx0.3",
+      "omega": 3.9718521820553145,
+      "hold_deg": 15.945022127944986,
+      "omega_ratio": 1.0,
+      "hold_ratio": 0.30000000000000004,
+      "authority_margin": 1.3287518439954156,
+      "design_fail_mean": 0.0,
+      "design_source": "rf_v2_fine",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "CONTROL",
+      "factors": {
+        "masscart": 4
+      },
+      "id": "masscartx4",
+      "omega": 3.8696140690614436,
+      "hold_deg": 14.25977588678007,
+      "omega_ratio": 0.9742593358696028,
+      "hold_ratio": 0.2682926829268293,
+      "authority_margin": 1.1883146572316725,
+      "design_fail_mean": 0.0,
+      "design_source": "rf_v2_fine",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "CONTROL",
+      "factors": {
+        "length": 1.25
+      },
+      "id": "lengthx1.25",
+      "omega": 3.5525325902626212,
+      "hold_deg": 53.150073759816614,
+      "omega_ratio": 0.8944271909999159,
+      "hold_ratio": 1.0,
+      "authority_margin": 4.4291728133180515,
+      "design_fail_mean": 0.0,
+      "design_source": "rf_v2_fine",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "CONTROL",
+      "factors": {
+        "length": 0.3
+      },
+      "id": "lengthx0.3",
+      "omega": 7.251576783959371,
+      "hold_deg": 53.150073759816614,
+      "omega_ratio": 1.8257418583505536,
+      "hold_ratio": 1.0,
+      "authority_margin": 4.4291728133180515,
+      "design_fail_mean": 0.0,
+      "design_source": "rf_v2_fine",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "CONTROL",
+      "factors": {
+        "masscart": 0.25
+      },
+      "id": "masscartx0.25",
+      "omega": 4.325400664573273,
+      "hold_deg": 167.04308895942367,
+      "omega_ratio": 1.0890135046100853,
+      "hold_ratio": 3.1428571428571432,
+      "authority_margin": 13.920257413285306,
+      "design_fail_mean": 0.0,
+      "design_source": "rf_v1",
+      "design_regime": "harmless"
+    },
+    {
+      "cls": "COMPOUND",
+      "factors": {
+        "force_mag": 0.25,
+        "masscart": 4
+      },
+      "id": "force_magx0.25|masscartx4",
+      "omega": 3.8696140690614436,
+      "hold_deg": 3.5649439716950173,
+      "omega_ratio": 0.9742593358696028,
+      "hold_ratio": 0.06707317073170732,
+      "authority_margin": 0.2970786643079181,
+      "design_fail_mean": null,
+      "design_source": "none_untested_compound",
+      "design_regime": null
+    },
+    {
+      "cls": "COMPOUND",
+      "factors": {
+        "force_mag": 0.1,
+        "masscart": 0.25
+      },
+      "id": "force_magx0.1|masscartx0.25",
+      "omega": 4.325400664573273,
+      "hold_deg": 16.704308895942365,
+      "omega_ratio": 1.0890135046100853,
+      "hold_ratio": 0.3142857142857143,
+      "authority_margin": 1.3920257413285304,
+      "design_fail_mean": null,
+      "design_source": "none_untested_compound",
+      "design_regime": null
+    }
+  ],
+  "labels": {
+    "failure": "episode ends by termination before step 500 (truncation at 500 = success)",
+    "onset": "shifts are static from step 0",
+    "deferred": "point-of-no-return label, fallback definition, detector list, metrics, warning horizon"
+  },
+  "holdout": {
+    "scheme": "leave-one-class-out over AUTH, FAST, SLOW",
+    "primary_fold": "FAST",
+    "why": "FAST failures occur at ~150-450 steps, leaving room to warn; AUTH (~60) and SLOW (~16-35) fail too fast, so they are secondary and their limits must be stated",
+    "never_used_to_fit_or_tune": [
+      "HEAVYPOLE",
+      "COMPOUND",
+      "CONTROL"
+    ]
+  },
+  "statistics": {
+    "bootstrap": "over policies, percentile, 95%, B=10000",
+    "multiplicity": "P1-P3 are three stand-alone confirmatory tests, no correction; every other analysis is labelled exploratory",
+    "amendment_rule": "any change after this file is logged requires a new version, a reason, and a statement of which data had been seen"
+  },
+  "preregistered": {
+    "P1_margin": {
+      "claim": "Policies with larger nominal angle excursions fail more when authority is cut (mechanism: margin).",
+      "statistic": "Spearman rho (average ranks) between nominal mean max|theta| over env seeds 20000-20099 and failure rate at masscartx16 over test seeds 50000+, across the 20 test policies",
+      "supported": "rho >= +0.5",
+      "not_supported": "rho < +0.5",
+      "inconclusive": "fewer than 5 distinct failure rates at x16, or zero spread in nominal margin",
+      "always_report": "percentile bootstrap 95% CI over policies, B=10000, rng seed 0",
+      "power_note": "with n=20 and true rho=0.5 the observed rho falls below 0.5 about half the time; the CI, not the threshold, is the evidence"
+    },
+    "P2_window": {
+      "claim": "A policy tuned to nominal omega rarely tolerates both a faster (length x0.2, omega ratio ~2.2) and slower (length x2, ~0.7) pole (mechanism: window).",
+      "statistic": "count of the 20 test policies with failure rate <= 0.05 on BOTH lengthx0.2 and lengthx2",
+      "supported": "count <= 2",
+      "refuted": "count >= 6",
+      "inconclusive": "3 to 5"
+    },
+    "P3_compound": {
+      "claim": "Failure is governed by hold angle, not parameter identity: two individually harmless shifts that cut hold_deg to ~3.6 deg fail; a shift that restores ~16.7 deg is harmless though force x0.1 alone fails (mechanism: authority).",
+      "statistic": "means over the 20 test policies of failure rate",
+      "preconditions": "force_magx0.25 <= 0.05, masscartx4 <= 0.05, masscartx0.25 <= 0.05, force_magx0.1 >= 0.20, else inconclusive_preconditions",
+      "supported": "C1 (force_magx0.25|masscartx4) >= 0.40 AND C2 (force_magx0.1|masscartx0.25) <= 0.05",
+      "refuted": "C1 <= 0.10 OR C2 >= 0.20",
+      "inconclusive": "otherwise"
+    },
+    "executable_verdicts": {
+      "source": "\nimport numpy as np, pandas as pd\ndef _rho(a, b):\n    return float(pd.Series(a).rank().corr(pd.Series(b).rank()))\ndef p1_verdict(margin, F, B=10000, seed=0):\n    idx = F.index\n    if len(idx) != 20: raise ValueError(\"P1 registered for exactly 20 test policies\")\n    a = margin.loc[idx].to_numpy(float); b = F[\"masscartx16\"].to_numpy(float)\n    if np.std(a) == 0 or len(np.unique(b)) < 5:\n        return dict(verdict=\"inconclusive_degenerate\", rho=None, ci95=None)\n    rho = _rho(a, b); rng = np.random.default_rng(seed); bs = []\n    for _ in range(B):\n        i = rng.integers(0, len(a), len(a)); r = _rho(a[i], b[i])\n        if not np.isnan(r): bs.append(r)\n    return dict(verdict=\"supported\" if rho >= 0.5 else \"not_supported\", rho=rho,\n                ci95=[float(np.percentile(bs, 2.5)), float(np.percentile(bs, 97.5))])\ndef p2_verdict(F):\n    if len(F) != 20: raise ValueError(\"P2 registered for exactly 20 test policies\")\n    n = int(((F[\"lengthx0.2\"] <= 0.05) & (F[\"lengthx2\"] <= 0.05)).sum())\n    return dict(verdict=\"supported\" if n <= 2 else \"refuted\" if n >= 6 else \"inconclusive\", count=n)\ndef p3_verdict(F):\n    m = F.mean()\n    pre = {\"force_magx0.25<=0.05\": m[\"force_magx0.25\"] <= 0.05, \"masscartx4<=0.05\": m[\"masscartx4\"] <= 0.05,\n           \"masscartx0.25<=0.05\": m[\"masscartx0.25\"] <= 0.05, \"force_magx0.1>=0.20\": m[\"force_magx0.1\"] >= 0.20}\n    c1 = float(m[\"force_magx0.25|masscartx4\"]); c2 = float(m[\"force_magx0.1|masscartx0.25\"])\n    if not all(pre.values()): v = \"inconclusive_preconditions\"\n    elif c1 >= 0.40 and c2 <= 0.05: v = \"supported\"\n    elif c1 <= 0.10 or c2 >= 0.20: v = \"refuted\"\n    else: v = \"inconclusive\"\n    return dict(verdict=v, C1=c1, C2=c2, preconditions={k: bool(x) for k, x in pre.items()})\n",
+      "sha256_16": "1c8fca9ba9d6e520"
+    }
+  }
+}
