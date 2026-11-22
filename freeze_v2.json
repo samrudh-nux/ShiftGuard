@@ -1,0 +1,245 @@
+{
+  "version": "freeze_v2",
+  "date": "2026-11-14",
+  "parent": {
+    "freeze_v1_sha256_16": "458feeda59f12c07"
+  },
+  "status": "label + protocol + metrics + structural predictions. Detector hyperparameters may be tuned ONLY on validation seeds (30000-30049) with dev policies 0-9, then locked in freeze_v3 before any test-seed evaluation.",
+  "pnr_label": {
+    "H": 100,
+    "eps": 0.02,
+    "K": 64,
+    "thr": 0.9,
+    "handoff_grid": "every step in the last 60 steps before termination, every 5 steps before that",
+    "primary_fallback": {
+      "name": "F_nominal",
+      "controller": "bang-bang on the LQR gain of the Euler-discretised linearised cartpole with NOMINAL parameters",
+      "Q": [
+        1,
+        0.1,
+        10,
+        1
+      ],
+      "R": 1.0,
+      "designed_without_knowledge_of_shift": true
+    },
+    "sensitivity_fallback": "F_informed: same design with the true shifted parameters",
+    "rollout_rng": "np.random.default_rng([11, policy_seed, env_seed, condition_index_in_freeze_v1_list]); retest uses first element 12",
+    "t_pnr": "last handoff step with p_recover >= thr; episodes with none: PNR undefined (counted as not alarm-able, reported)",
+    "failure": "terminated before step 500; truncation = success",
+    "fixed_lead_sensitivity": "alarm at or before T_fail - 10 steps"
+  },
+  "label_validity": {
+    "rule": "a condition is label-valid if the always-on fallback fails < 10% of design episodes at eps 0.02 (proto_always_fallback.csv, seeds 10000-10019), for BOTH fallbacks",
+    "always_on_design_failure": {
+      "force_magx0.1": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "force_magx0.15": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "force_magx0.1|masscartx0.25": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "force_magx0.25": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "force_magx0.25|masscartx4": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "force_magx0.3": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "gravityx2.5": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "gravityx3": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "gravityx3.5": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "gravityx4": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "lengthx0.15": {
+        "F_informed": 0.15,
+        "F_nominal": 0.7
+      },
+      "lengthx0.2": {
+        "F_informed": 0.1,
+        "F_nominal": 0.15
+      },
+      "lengthx0.25": {
+        "F_informed": 0.05,
+        "F_nominal": 0.0
+      },
+      "lengthx0.3": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "lengthx1.25": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "lengthx1.5": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "lengthx1.75": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "lengthx2": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "masscartx0.25": {
+        "F_informed": 0.0,
+        "F_nominal": 0.05
+      },
+      "masscartx12": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "masscartx16": {
+        "F_informed": 0.05,
+        "F_nominal": 0.05
+      },
+      "masscartx24": {
+        "F_informed": 0.15,
+        "F_nominal": 0.15
+      },
+      "masscartx4": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "masscartx6": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "masspolex128": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "masspolex32": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      },
+      "nominal": {
+        "F_informed": 0.0,
+        "F_nominal": 0.0
+      }
+    },
+    "flagged_fallback_limited": [
+      "lengthx0.15",
+      "lengthx0.2",
+      "masscartx24"
+    ],
+    "valid_by_class": {
+      "AUTH": [
+        "force_magx0.1",
+        "force_magx0.15",
+        "force_magx0.25",
+        "masscartx12",
+        "masscartx16",
+        "masscartx6"
+      ],
+      "COMPOUND": [
+        "force_magx0.1|masscartx0.25",
+        "force_magx0.25|masscartx4"
+      ],
+      "CONTROL": [
+        "force_magx0.3",
+        "gravityx2.5",
+        "lengthx0.3",
+        "lengthx1.25",
+        "masscartx0.25",
+        "masscartx4",
+        "masspolex32"
+      ],
+      "FAST": [
+        "gravityx3",
+        "gravityx3.5",
+        "gravityx4",
+        "lengthx0.25"
+      ],
+      "HEAVYPOLE": [
+        "masspolex128"
+      ],
+      "NOMINAL": [
+        "nominal"
+      ],
+      "SLOW": [
+        "lengthx1.5",
+        "lengthx1.75",
+        "lengthx2"
+      ]
+    },
+    "headline": "valid conditions only; flagged conditions reported separately with the failure-only label"
+  },
+  "intervention": "no detector-gated benefit claims; report the always-on F_nominal failure rate per condition as the reference gated intervention cannot beat (the fallback has no cost in CartPole)",
+  "partitions_added": {
+    "calibration_fit": [
+      20000,
+      20099
+    ],
+    "calibration_threshold": [
+      21000,
+      21299
+    ],
+    "note": "nominal only; calibration_threshold is new and disjoint from all earlier blocks; models never see shifted data",
+    "validation_episodes": [
+      30000,
+      30049
+    ],
+    "test_episodes": [
+      50000,
+      50049
+    ],
+    "policies_validation": "dev 0-9",
+    "policies_test": "test 100-119"
+  },
+  "detectors": {
+    "unsupervised_only": true,
+    "window": 5,
+    "D0_margin": "max(|theta|/0.2094, |x|/2.4)",
+    "D1_forward_residual": "degree-2 polynomial ridge (alpha 1e-6, standardised inputs) predicting next-state delta from (state, action), per policy, fit on calibration_fit; score = windowed mean squared standardised residual",
+    "D2_policy_confidence": "1 - max action probability of the policy",
+    "D3_isolation_forest": "sklearn IsolationForest(n_estimators=100, random_state=0) on the last 5 states flattened, per policy, fit on calibration_fit windows; score = -score_samples",
+    "threshold": "per policy and detector: (1-alpha) quantile (higher interpolation) of the per-episode maximum score over calibration_threshold",
+    "alpha_primary": 0.05,
+    "alpha_secondary": 0.01,
+    "alarm": "first step t >= window-1 with smoothed score > threshold (score smoothing = mean over the last 5 steps)",
+    "stored": "first-alarm step per detector and alpha, per-episode max score",
+    "tunable_on_validation_only": [
+      "window length",
+      "D1 polynomial degree / ridge alpha",
+      "D3 n_estimators"
+    ],
+    "locked_in": "freeze_v3"
+  },
+  "metrics": {
+    "unit": "policy; statistics computed per policy, then averaged over policies; 95% percentile bootstrap over policies (10000 resamples, numpy seed 0)",
+    "onset_rate": "fraction of a policy's episodes (pooled over a class's conditions) with any alarm; onset = step 0 (static shifts)",
+    "timely_recall": "among failing episodes in label-valid conditions: fraction with first alarm <= t_PNR; undefined PNR counts as not timely; policies with < 3 failing episodes in the class are excluded and counted",
+    "fixed_lead_recall": "same with first alarm <= T_fail - 10",
+    "irrelevant_alarm_share": "among episodes with any alarm: fraction that do not fail",
+    "nominal_check": "report per-policy alarm rate on nominal validation/test episodes next to the calibration alpha"
+  },
+  "preregistered_added": {
+    "P4_harmless_alarms": "CONTROL class (pooled over its 7 conditions), alpha=0.05, mean over the 20 test policies of onset_rate. Precondition: pooled CONTROL failure rate <= 0.05 on the test policies, else inconclusive. Supported if >= 2 of the 4 detectors have mean onset_rate >= 0.50; refuted if none does; otherwise inconclusive.",
+    "P5_trivial_baseline": "FAST fold, label-valid conditions, alpha=0.05, timely_recall. Needs >= 8 of 20 test policies contributing, else inconclusive. Supported if D0 (margin) mean timely_recall >= 0.80 AND no other detector exceeds D0 by >= 0.10 with a 95% policy-bootstrap CI lower bound > 0. Refuted if some detector exceeds D0 by >= 0.10 with CI lower bound > 0. Otherwise inconclusive.",
+    "P6_policy_heterogeneity": "D1 (forward residual), alpha=0.05, FAST fold, label-valid conditions: range (max - min) over contributing test policies (>= 8) of per-policy timely_recall. Supported if >= 0.30; refuted if < 0.15; otherwise inconclusive."
+  }
+}
